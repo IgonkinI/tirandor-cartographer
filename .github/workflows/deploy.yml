@@ -37,8 +37,12 @@ jobs:
           node --check js/v05.js
           node --check js/v06.js
           node --check js/v07.js
+          node --check js/v08.js
           node --check js/main.js
           node --check sw.js
+      - name: Verify bundled asset atlas
+        run: |
+          echo '105678fa3a762600de4f14f966bcb43c5481fb8f15833f55923068f86ed9418e  assets/generated/user-assets-v08.webp' | sha256sum -c -
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
