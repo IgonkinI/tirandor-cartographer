@@ -1,8 +1,8 @@
-const CACHE = 'tirandor-cartographer-v0.1.0'
+const CACHE = 'tirandor-cartographer-v0.2.0'
 const ASSETS = [
-  './', './index.html', './styles.css', './manifest.webmanifest', './icon.svg',
+  './', './index.html', './styles.css', './styles-v02.css', './manifest.webmanifest', './icon.svg',
   './js/core.js', './js/drawing.js', './js/editor.js', './js/screens-home.js',
-  './js/screens-editor.js', './js/io.js', './js/main.js'
+  './js/screens-editor.js', './js/io.js', './js/v02.js', './js/main.js'
 ]
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()))
