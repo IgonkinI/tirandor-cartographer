@@ -1,6 +1,8 @@
-name: Deploy static site to GitHub Pages
+name: Test and deploy static site
 
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
   workflow_dispatch:
@@ -11,20 +13,19 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Check JavaScript syntax
         run: |
+          node --check app.js
           node --check js/core.js
           node --check js/drawing.js
           node --check js/editor.js
@@ -42,11 +43,34 @@ jobs:
           node --check js/main.js
           node --check sw.js
           node --check tests/model-smoke.js
+
       - name: Runtime model regression smoke test
         run: node tests/model-smoke.js
-      - name: Verify bundled asset atlas
+
+      - name: Verify bundled v0.8 atlas
         run: |
           echo '105678fa3a762600de4f14f966bcb43c5481fb8f15833f55923068f86ed9418e  assets/generated/user-assets-v08.webp' | sha256sum -c -
+
+      - name: Verify v0.10 illustrated sheets
+        run: |
+          test -s assets/sheets/terrain_sheet.png
+          test -s assets/sheets/ruins_sheet.png
+          test -s assets/sheets/guilds_sheet.png
+          test -s assets/sheets/buildings_sheet.png
+          test -s assets/sheets/creatures_sheet.png
+          test -s assets/sheets/races_sheet.png
+          test -s assets/sheets/mixed_sheet.png
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: test
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
