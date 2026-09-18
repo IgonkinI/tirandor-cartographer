@@ -1,0 +1,13 @@
+{
+  "name": "Tirandor Cartographer",
+  "short_name": "Cartographer",
+  "description": "Local-first D&D map editor",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#11100e",
+  "theme_color": "#14120f",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
