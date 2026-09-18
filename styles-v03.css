@@ -1,0 +1,2 @@
+/* Tirandor Cartographer v0.3 */
+.layer{grid-template-columns:28px 1fr 28px 28px 28px}.tc3-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}.tc3-panel{display:grid;gap:10px}.tc3-inspector{display:grid;gap:10px}.tc3-aud{font-size:10px;font-weight:800;color:var(--gold2)}
