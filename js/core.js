@@ -1,4 +1,4 @@
-const APP_VERSION = '0.9.0'
+const APP_VERSION = '0.10.1'
 const $app = document.querySelector('#app')
 
 const KIND_LABELS = { world:'Мир', region:'Регион', city:'Город', dungeon:'Подземелье', battle:'Battlemap' }

@@ -1,0 +1,10 @@
+/* v0.10.1 HD source-sheet library layered on top of v0.9 */
+.tc10-hd,.tc10-inspector{display:grid;gap:10px}
+.tc10-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tc10-row select,.tc10-row input{min-width:0}
+.tc10-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:520px;overflow:auto;padding-right:2px}
+.tc10-card{min-height:118px;border:1px solid #393229;background:#1d1914;border-radius:9px;padding:5px;display:grid;grid-template-rows:88px auto;place-items:center;gap:4px;color:#d9d0c2;cursor:grab}
+.tc10-card:hover,.tc10-card.active{border-color:#84693f;background:#2a2319}
+.tc10-card canvas{width:112px;height:88px;max-width:100%;background:#e5d5b7;border-radius:6px}
+.tc10-card span{font:600 10px/1.1 "Old Standard TT",Georgia,serif;text-align:center}
+@media(max-width:1200px){.tc10-row,.tc10-grid{grid-template-columns:1fr}}
