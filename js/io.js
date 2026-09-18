@@ -1,0 +1,26 @@
+// ---------- import/export ----------
+async function exportProject(project,maps){
+  const bundle={format:'dndatlas',version:1,appVersion:APP_VERSION,exportedAt:new Date().toISOString(),project,maps};downloadBlob(new Blob([JSON.stringify(bundle,null,2)],{type:'application/json'}),`${safe(project.name)}.dndatlas`)
+}
+async function handleImportProject(e){
+  const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='dndatlas'||!data.project||!Array.isArray(data.maps))throw new Error('Неверный формат .dndatlas');const p={...data.project,id:uid('project'),updatedAt:now()};await idbPut('projects',p);for(const old of data.maps){const m={...old,id:uid('map'),projectId:p.id,updatedAt:now()};m.objects=(m.objects||[]).map(o=>({...o,id:uid('obj')}));await idbPut('maps',m)}await renderProject(p.id);toast('Проект импортирован')}catch(err){alert(`Импорт не удался: ${err.message}`)}finally{e.target.value=''}}
+function exportMapModal(editor,map){
+  showModal(`<div class="modal"><div class="modal-title"><div><span class="eyebrow">Экспорт</span><h2>${esc(map.name)}</h2></div><button class="icon-btn modal-close">✕</button></div><button id="pngExport" class="export-card"><b style="font-size:24px">▧</b><div><strong>PNG x2</strong><span>Полная карта с текущей сеткой</span></div></button><div class="segmented"><button data-mode="fit" class="print-mode ${['dungeon','battle'].includes(map.kind)?'':'active'}">На один лист</button><button data-mode="battle" class="print-mode ${['dungeon','battle'].includes(map.kind)?'active':''}">Battlemap 1″</button></div><div class="field-grid two"><label>Бумага<select id="paper"><option value="a4">A4</option><option value="a3">A3</option></select></label><label>Ориентация<select id="orient"><option value="landscape">Альбомная</option><option value="portrait">Книжная</option></select></label></div><p id="printNote" class="muted" style="line-height:1.5">Режим Battlemap режет карту на листы: каждая игровая клетка печатается ровно 25,4 мм.</p><button id="printExport" class="primary wide">⎙ Печать / сохранить PDF</button></div>`)
+  let mode=['dungeon','battle'].includes(map.kind)?'battle':'fit';$$('.print-mode').forEach(b=>b.onclick=()=>{$$('.print-mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;$('#printNote').textContent=mode==='battle'?'Режим Battlemap режет карту на листы: каждая игровая клетка печатается ровно 25,4 мм.':'Карта будет вписана целиком в один выбранный лист.'});$('#pngExport').onclick=()=>{const c=renderMapToCanvas(map,2,false);c.toBlob(blob=>blob&&downloadBlob(blob,`${safe(map.name)}.png`),'image/png')};$('#printExport').onclick=()=>printMap(map,mode,$('#paper').value,$('#orient').value)
+}
+function printMap(map,mode,paper,orientation){
+  const w=window.open('','_blank');if(!w){alert('Браузер заблокировал окно печати. Разрешите всплывающие окна для сайта.');return}
+  const c=renderMapToCanvas(map,2,mode==='battle'), portrait=orientation==='portrait', dims=paper==='a3'?[297,420]:[210,297],pageW=portrait?dims[0]:dims[1],pageH=portrait?dims[1]:dims[0],margin=5
+  const pageRule=`@page{size:${paper.toUpperCase()} ${orientation};margin:0}`
+  let body=''
+  if(mode==='fit'){
+    body=`<div class="page fit"><img src="${c.toDataURL('image/png')}"></div>`
+  }else{
+    const cellsX=Math.max(1,Math.floor((pageW-margin*2)/25.4)),cellsY=Math.max(1,Math.floor((pageH-margin*2)/25.4)),pxCell=c.width/map.settings.columns;let n=0
+    for(let row=0;row<map.settings.rows;row+=cellsY)for(let col=0;col<map.settings.columns;col+=cellsX){const takeX=Math.min(cellsX,map.settings.columns-col),takeY=Math.min(cellsY,map.settings.rows-row),crop=document.createElement('canvas');crop.width=Math.round(takeX*pxCell);crop.height=Math.round(takeY*pxCell);crop.getContext('2d').drawImage(c,Math.round(col*pxCell),Math.round(row*pxCell),crop.width,crop.height,0,0,crop.width,crop.height);const label=`${String.fromCharCode(65+Math.floor(row/cellsY))}${Math.floor(col/cellsX)+1}`;body+=`<div class="page"><img style="left:${margin}mm;top:${margin}mm;width:${takeX*25.4}mm;height:${takeY*25.4}mm" src="${crop.toDataURL('image/png')}"><span>${label}</span></div>`;n++}
+  }
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(map.name)} — печать</title><style>${pageRule}*{box-sizing:border-box}html,body{margin:0;padding:0;background:white}.page{width:${pageW}mm;height:${pageH}mm;position:relative;page-break-after:always;overflow:hidden;background:white}.page:last-child{page-break-after:auto}.page img{position:absolute;image-rendering:auto}.page span{position:absolute;right:3mm;bottom:2mm;font:7pt Arial;color:#666}.fit{display:flex;align-items:center;justify-content:center;padding:${margin}mm}.fit img{position:static;max-width:100%;max-height:100%;width:auto;height:auto}</style></head><body>${body}<script>window.onload=()=>setTimeout(()=>window.print(),250)<\/script></body></html>`);w.document.close();closeModal()
+}
+function downloadBlob(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),500)}
+function safe(name){return(name||'map').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,'_')}
+
