@@ -1,4 +1,4 @@
-const APP_VERSION = '0.1.0'
+const APP_VERSION = '0.9.0'
 const $app = document.querySelector('#app')
 
 const KIND_LABELS = { world:'Мир', region:'Регион', city:'Город', dungeon:'Подземелье', battle:'Battlemap' }
@@ -43,7 +43,7 @@ function defaultSettings(kind){ return {
   columns: ['world','region'].includes(kind)?60:kind==='city'?50:30,
   rows: ['world','region'].includes(kind)?40:kind==='city'?36:22,
   cellSize:50, gridVisible:['dungeon','battle'].includes(kind), gridOpacity:.24, gridType:'square',
-  background:['dungeon','battle'].includes(kind)?'#f0e5cf':'#e8ddbf', snapToGrid:['dungeon','battle'].includes(kind)
+  background:['dungeon','battle'].includes(kind)?'#f0e5cf':'#e8ddbf', snapToGrid:['dungeon','battle'].includes(kind),\n  labelFont:'Old Standard TT', titleFont:'Cormorant SC'
 }}
 function defaultLayers(kind){ return ['dungeon','battle'].includes(kind)
   ? [{id:uid('layer'),name:'GM Notes',visible:true,locked:false},{id:uid('layer'),name:'Objects',visible:true,locked:false},{id:uid('layer'),name:'Walls & doors',visible:true,locked:false},{id:uid('layer'),name:'Floor',visible:true,locked:false}]

@@ -38,8 +38,12 @@ jobs:
           node --check js/v06.js
           node --check js/v07.js
           node --check js/v08.js
+          node --check js/v09.js
           node --check js/main.js
           node --check sw.js
+          node --check tests/model-smoke.js
+      - name: Runtime model regression smoke test
+        run: node tests/model-smoke.js
       - name: Verify bundled asset atlas
         run: |
           echo '105678fa3a762600de4f14f966bcb43c5481fb8f15833f55923068f86ed9418e  assets/generated/user-assets-v08.webp' | sha256sum -c -

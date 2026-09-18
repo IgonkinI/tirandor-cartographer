@@ -74,10 +74,12 @@ const TC_V07=(()=>{
   const list=()=>ui.pack==='historic'?historical:local;
   const cache=new Map();
 
-  function ensure(map){
-    map.settings.labelFont||='Old Standard TT';
-    map.settings.titleFont||='Cormorant SC';
-    return map;
+  function ensure(target){
+    if(!target)return target;
+    const settings=target.settings||target;
+    settings.labelFont||='Old Standard TT';
+    settings.titleFont||='Cormorant SC';
+    return target;
   }
   function getImage(src){
     let rec=cache.get(src);if(rec)return rec;
