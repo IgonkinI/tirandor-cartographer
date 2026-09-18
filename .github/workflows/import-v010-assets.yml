@@ -1,0 +1,50 @@
+name: Import improved v0.10 asset sheets
+
+on:
+  push:
+    branches:
+      - feature/v0.10-improved-assets
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/v0.10-improved-assets
+
+      - name: Download prepared v0.10 bundle
+        run: |
+          curl -L --fail --retry 3 'https://at.adobe.com/lcHhrb3YK2sPs66B' -o /tmp/tirandor-v010.zip
+          rm -rf /tmp/tirandor-v010
+          mkdir -p /tmp/tirandor-v010
+          unzip -q /tmp/tirandor-v010.zip -d /tmp/tirandor-v010
+
+      - name: Import static client and improved source sheets
+        run: |
+          SRC='/tmp/tirandor-v010/tirandor-cartographer-static'
+          test -f "$SRC/index.html"
+          test -f "$SRC/app.js"
+          test -d "$SRC/assets/sheets"
+          cp "$SRC/index.html" ./index.html
+          cp "$SRC/styles.css" ./styles.css
+          cp "$SRC/app.js" ./app.js
+          cp "$SRC/README.md" ./README.md
+          mkdir -p assets/sheets
+          cp "$SRC"/assets/sheets/* assets/sheets/
+
+      - name: Commit imported files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html styles.css app.js README.md assets/sheets
+          if git diff --cached --quiet; then
+            echo 'No import changes'
+            exit 0
+          fi
+          git commit -m 'feat: integrate improved medieval asset sheets v0.10'
+          git push origin HEAD:feature/v0.10-improved-assets
