@@ -1,0 +1,6 @@
+/* Tirandor Cartographer v0.6 */
+.tc6-compose,.tc6-z,.tc6-heraldry,.tc6-text,.tc6-frame{display:grid;gap:10px}
+.tc6-presets,.tc6-zgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.tc6-presets button,.tc6-zgrid button{min-height:36px;border:1px solid #44392c;background:#211d17;border-radius:8px;color:#d9d0c2;cursor:pointer;font-size:11px}
+.tc6-presets button:first-child{grid-column:span 2}
+.tc6-presets button:hover,.tc6-zgrid button:hover{border-color:#7a633e;background:#2a241b;color:var(--gold2)}
