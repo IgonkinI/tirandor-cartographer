@@ -1,34 +1,31 @@
-# Tirandor Cartographer v0.10
+# Tirandor Cartographer — v0.10.1
 
-Static local-first fantasy cartography editor focused on high/late-medieval visual language.
+Local-first D&D cartography editor focused on high/late-medieval map aesthetics, printable maps and GitHub Pages.
 
-## v0.10
+## v0.10.1 hotfix
 
-- Replaced the weakest automatically cropped sprite assets with seven new high-quality illustrated source sheets.
-- The new sheets have cleaner separation, larger safe margins and more consistent medieval-map rendering.
-- Added a new static client entrypoint (`app.js`) that works directly from GitHub Pages.
-- Added project home screen, project creation, local persistence, `.dndatlas` import/export and PNG export.
-- Added canvas pan/zoom, object selection, object dragging and text labels.
-- Asset previews and map objects are extracted locally from the source sheets and background-trimmed in the browser.
-- Added font presets aimed at medieval cartography and manuscript-like labels.
-- The previous v0.8 atlas and v0.9 modules remain in the repository for compatibility while the v0.10 client becomes the active entrypoint.
+This release restores the full modular editor that existed before v0.10 and keeps the new illustrated sheets as an **additional** library instead of replacing the established application.
 
-## Improved illustrated packs
+### Restored
 
-The project now bundles seven new source sheets:
+- all original map tools: selection, pan, rooms/areas, walls, doors, roads, rivers, labels, trees, mountains and settlements;
+- layers, visibility/locking, undo/redo, duplication and map settings;
+- old 302-object raster atlas from v0.8;
+- v0.9 favorites, recent items, tags, search and drag/drop;
+- historical/public-domain assets and locally bundled open SVG assets;
+- heraldry, composition presets, z-order, manuscript text styles and illustrated terrain from earlier releases;
+- IndexedDB project model and existing .dndatlas compatibility.
 
-- terrain / landscapes
-- ruins / special places
-- guilds
-- buildings
-- creatures
-- races
-- mixed medieval cartographic illustrations
+### Improved assets
 
-Files live in `assets/sheets/`.
+The seven redrawn source sheets from v0.10 remain bundled in `assets/sheets/`, but are exposed as a separate **HD assets** tool/library. They do not overwrite old asset IDs.
 
-## CI
+HD extraction uses cell-safe margins, edge-connected parchment removal and alpha trimming in the browser.
 
-Pull requests now run syntax checks for the new `app.js`, the legacy modules, the runtime model regression test, the v0.8 atlas checksum and presence checks for all v0.10 asset sheets.
+### Cache
 
-GitHub Pages deploys only after the test job succeeds on `main`.
+Service worker cache was bumped to `v0.10.1` and now includes both the old v0.8 atlas and the seven improved HD sheets.
+
+### CI safeguards
+
+CI now explicitly checks that the modular editor, old raster atlas, old tools and v0.10 HD module are all present before GitHub Pages can deploy.

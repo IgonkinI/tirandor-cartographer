@@ -40,6 +40,7 @@ jobs:
           node --check js/v07.js
           node --check js/v08.js
           node --check js/v09.js
+          node --check js/v10.js
           node --check js/main.js
           node --check sw.js
           node --check tests/model-smoke.js
@@ -47,11 +48,24 @@ jobs:
       - name: Runtime model regression smoke test
         run: node tests/model-smoke.js
 
+      - name: Compatibility guard
+        run: |
+          grep -q './js/editor.js' index.html
+          grep -q './js/v08.js' index.html
+          grep -q './js/v09.js' index.html
+          grep -q './js/v10.js' index.html
+          grep -q './js/main.js' index.html
+          grep -q 'room:' js/core.js
+          grep -q 'wall:' js/core.js
+          grep -q 'road:' js/core.js
+          grep -q 'river:' js/core.js
+          grep -q 'assets/generated/user-assets-v08.webp' sw.js
+
       - name: Verify bundled v0.8 atlas
         run: |
           echo '105678fa3a762600de4f14f966bcb43c5481fb8f15833f55923068f86ed9418e  assets/generated/user-assets-v08.webp' | sha256sum -c -
 
-      - name: Verify v0.10 illustrated sheets
+      - name: Verify improved v0.10 sheets
         run: |
           test -s assets/sheets/terrain_sheet.png
           test -s assets/sheets/ruins_sheet.png
