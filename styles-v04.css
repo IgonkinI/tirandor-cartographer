@@ -1,0 +1,6 @@
+/* Tirandor Cartographer v0.4 */
+.tc4-history,.tc4-node-panel{display:grid;gap:10px}
+.tc4-history h3,.tc4-node-panel h3{margin-bottom:2px}
+.tc2-symbol[data-s="dragon"] b,.tc2-symbol[data-s="wyvern"] b,.tc2-symbol[data-s="sea-serpent"] b,
+.tc2-symbol[data-s="griffin"] b,.tc2-symbol[data-s="gargoyle"] b{font-family:Georgia,serif;font-size:15px;font-weight:800}
+.tc2-symbol[data-s="sun-face"] b,.tc2-symbol[data-s="moon-face"] b{font-size:24px}

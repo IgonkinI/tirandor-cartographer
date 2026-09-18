@@ -23,6 +23,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          node --check js/core.js
+          node --check js/drawing.js
+          node --check js/editor.js
+          node --check js/screens-home.js
+          node --check js/screens-editor.js
+          node --check js/io.js
+          node --check js/v02.js
+          node --check js/v03.js
+          node --check js/v04.js
+          node --check js/main.js
+          node --check sw.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
