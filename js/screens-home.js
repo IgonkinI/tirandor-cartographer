@@ -1,0 +1,24 @@
+// ---------- screens ----------
+async function renderHome(){
+  state.editor?.dispose();state.editor=null;state.screen='home';state.projectId=null;state.mapId=null
+  const projects=(await idbAll('projects')).sort((a,b)=>b.updatedAt-a.updatedAt)
+  $app.innerHTML=`<div class="home"><section class="hero"><div><span class="eyebrow gold">LOCAL-FIRST D&D CARTOGRAPHY</span><h1>Tirandor<br><em>Cartographer</em></h1><p>Миры, регионы, города, подземелья и battlemap — в одном редакторе, готовом к печати. Всё хранится локально, без аккаунта и backend.</p></div><div class="hero-actions"><button id="newProject" class="primary large">＋ Новый проект</button><button id="importProject" class="secondary large">⇧ Импорт .dndatlas</button></div></section><section class="library"><div class="section-title"><div><span class="eyebrow">Библиотека</span><h2>Ваши проекты</h2></div><span class="muted">Хранятся только в этом браузере</span></div>${projects.length?`<div class="project-grid">${projects.map(projectCard).join('')}</div>`:`<div class="empty"><div style="font-size:38px">⌘</div><h3>Пока пусто</h3><p>Создайте первый мир. Сервер и регистрация не нужны.</p></div>`}</section><input id="fileImport" type="file" accept=".dndatlas,application/json" hidden></div>`
+  $('#newProject').onclick=async()=>{const p=createProject(projects.length?`Новый мир ${projects.length+1}`:'Тирандор');await idbPut('projects',p);const m=createMap(p.id,'Первая карта','region');await idbPut('maps',m);await renderProject(p.id)}
+  $('#importProject').onclick=()=>$('#fileImport').click();$('#fileImport').onchange=handleImportProject
+  $$('.project-card').forEach(el=>el.onclick=e=>{if(e.target.closest('.delete-project'))return;renderProject(el.dataset.id)})
+  $$('.delete-project').forEach(btn=>btn.onclick=async e=>{e.stopPropagation();if(!confirm('Удалить проект и все его карты?'))return;const pid=btn.dataset.id;for(const m of await mapsFor(pid))await idbDelete('maps',m.id);await idbDelete('projects',pid);renderHome()})
+}
+function projectCard(p){return `<article class="project-card" data-id="${p.id}"><div class="preview"><div style="position:relative;font-size:42px">✧</div></div><div class="project-card-body"><div><h3>${esc(p.name)}</h3><p>${esc(p.description||'')}</p></div><button class="mini-btn danger delete-project" data-id="${p.id}" title="Удалить">✕</button></div></article>`}
+async function renderProject(projectId){
+  state.editor?.dispose();state.editor=null;state.screen='project';state.projectId=projectId;state.mapId=null
+  const p=await idbGet('projects',projectId);if(!p)return renderHome();const maps=await mapsFor(projectId)
+  $app.innerHTML=`<div class="home"><header class="project-header"><button id="backHome" class="icon-btn">←</button><div><span class="eyebrow">Проект</span><h1>${esc(p.name)}</h1></div><div class="spacer"></div><button id="exportProject" class="secondary">⇩ Экспорт проекта</button><button id="newMap" class="primary">＋ Новая карта</button></header><section class="library">${maps.length?`<div class="map-grid">${maps.map(mapCard).join('')}</div>`:`<div class="empty"><div style="font-size:38px">▦</div><h3>Нет карт</h3></div>`}</section></div>`
+  $('#backHome').onclick=renderHome;$('#newMap').onclick=()=>newMapModal(p);$('#exportProject').onclick=()=>exportProject(p,maps)
+  $$('.map-card').forEach(el=>el.onclick=e=>{if(e.target.closest('.delete-map'))return;renderEditor(el.dataset.id)})
+  $$('.delete-map').forEach(btn=>btn.onclick=async e=>{e.stopPropagation();if(confirm('Удалить карту без возможности восстановления?')){await idbDelete('maps',btn.dataset.id);renderProject(projectId)}})
+}
+function mapCard(m){return `<article class="map-card" data-id="${m.id}"><div class="map-preview ${m.kind}"><span>${KIND_LABELS[m.kind]}</span></div><div class="map-card-body"><div><h3>${esc(m.name)}</h3><p>${m.settings.columns} × ${m.settings.rows} · ${m.layers.length} сл.</p></div><button class="mini-btn danger delete-map" data-id="${m.id}">✕</button></div></article>`}
+function newMapModal(project){
+  showModal(`<div class="modal compact"><div class="modal-title"><div><span class="eyebrow">Новая карта</span><h2>Что рисуем?</h2></div><button class="icon-btn modal-close">✕</button></div><label class="field">Название<input id="mapName" value="Новая карта" autofocus></label><div class="kind-grid">${Object.entries(KIND_LABELS).map(([k,v])=>`<button data-kind="${k}" class="kind ${k==='dungeon'?'active':''}"><b style="font-size:18px">▦</b><span>${v}</span></button>`).join('')}</div><button id="createMap" class="primary wide">Создать карту</button></div>`)
+  let kind='dungeon';$$('.kind').forEach(b=>b.onclick=()=>{$$('.kind').forEach(x=>x.classList.remove('active'));b.classList.add('active');kind=b.dataset.kind});$('#createMap').onclick=async()=>{const m=createMap(project.id,$('#mapName').value.trim()||'Без названия',kind);await idbPut('maps',m);closeModal();renderEditor(m.id)}
+}
