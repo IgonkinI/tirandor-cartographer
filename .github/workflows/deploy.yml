@@ -36,6 +36,7 @@ jobs:
           node --check js/v04.js
           node --check js/v05.js
           node --check js/v06.js
+          node --check js/v07.js
           node --check js/main.js
           node --check sw.js
       - name: Configure Pages

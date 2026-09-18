@@ -1,0 +1,24 @@
+/* Tirandor Cartographer v0.7 — bundled typography + sourced assets */
+@font-face{font-family:"Old Standard TT";src:url("./assets/fonts/OldStandard-Regular.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Old Standard TT";src:url("./assets/fonts/OldStandard-Italic.ttf") format("truetype");font-style:italic;font-weight:400;font-display:swap}
+@font-face{font-family:"Old Standard TT";src:url("./assets/fonts/OldStandard-Bold.ttf") format("truetype");font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:"Cormorant SC";src:url("./assets/fonts/CormorantSC-Regular.ttf") format("truetype");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Cormorant SC";src:url("./assets/fonts/CormorantSC-SemiBold.ttf") format("truetype");font-style:normal;font-weight:600;font-display:swap}
+
+.hero h1,.section-title h2,.project-header h1,.project-card h3,.map-card h3,.modal h2,.panel h3,.title-stack input{
+  font-family:"Cormorant SC","Old Standard TT",Georgia,serif;
+  letter-spacing:.015em
+}
+.project-card h3,.map-card h3,.panel h3{font-weight:600}
+.map-chip,.eyebrow{font-family:"Old Standard TT",Georgia,serif}
+.tc7-fonts,.tc7-pack,.tc7-inspector,.tc7-text-font{display:grid;gap:10px}
+.tc7-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:560px;overflow:auto;padding-right:2px}
+.tc7-card{min-height:134px;border:1px solid #3b342a;background:#201c16;border-radius:10px;padding:6px;display:grid;grid-template-rows:88px auto auto;gap:4px;place-items:center;cursor:pointer;color:#d8d0c4;overflow:hidden}
+.tc7-card img{width:100%;height:88px;object-fit:contain;border-radius:6px;background:#e8d8b9;filter:saturate(.9) contrast(1.02)}
+.tc7-card span{font:600 11px/1.15 "Old Standard TT",Georgia,serif;text-align:center}
+.tc7-card small{font-size:9px;color:#8f8577}
+.tc7-card:hover,.tc7-card.active{border-color:#80663e;background:#2b241a}
+.tc7-card.active img{box-shadow:inset 0 0 0 2px rgba(128,82,41,.45)}
+.tc7-source{display:grid;gap:3px;border:1px solid #3a332a;background:#1f1b16;border-radius:8px;padding:9px;font-size:10px;color:#a99f92}
+.tc7-source strong{color:var(--gold2)}
+.tc7-source a{color:#c7a76d;text-decoration:none}.tc7-source a:hover{text-decoration:underline}

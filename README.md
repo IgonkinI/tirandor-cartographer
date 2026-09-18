@@ -1,18 +1,26 @@
-# Tirandor Cartographer — v0.6
+# Tirandor Cartographer — v0.7
 
-v0.6 превращает библиотеку ассетов в полноценный инструмент композиции позднесредневековой карты.
+Local-first D&D cartography editor focused on high/late-medieval visual language, printable maps and GitHub Pages deployment.
 
-## Новое
+## v0.7 — Sourced art + typography
 
-- heraldry editor: деления щита, два поля, фигуры, цвета, корона и подпись;
-- композиционные пресеты Portolan, Mappa Mundi и Royal Chart;
-- отдельные редактируемые рамки: simple, double, rope и illuminated;
-- z-order для любого выбранного объекта: front/up/down/back;
-- стили рукописных подписей Monastic, Portolan, Royal и Faded manuscript;
-- новая группа Illustrated Terrain: горные цепи, массивы, рощи, кипарисы, болота, дюны, скалистый берег, поля и сады;
-- дополнительные варианты городских виньеток, кораблей, чудовищ и фигур;
-- ещё 24 функциональных обозначения для ремёсел, городской инфраструктуры и сельской местности.
+- bundled Old Standard TT and Cormorant SC locally under SIL OFL 1.1;
+- Cyrillic-capable map typography for Russian and English campaigns;
+- map-level label font and title font selectors;
+- per-text-object font override;
+- 20 locally bundled detailed SVG assets from Game-icons.net (CC BY 3.0), recolored for parchment maps;
+- archival public-domain historical fragments from the Catalan Atlas (1375) and Psalter World Map (c.1265);
+- historical assets carry visible source / license metadata in the inspector;
+- historical scans render with Multiply blending by default to merge with parchment;
+- resize / rotate / opacity / blend controls for sourced art objects;
+- service worker cache updated to include local font and SVG packs.
 
-## Совместимость
+Full provenance: docs/ASSET_SOURCES.md.
 
-Формат остаётся совместимым с проектами v0.1–v0.5. Все новые элементы сохраняются внутри .dndatlas как обычные объекты карты.
+## Architecture
+
+No backend and no build step. Static HTML/CSS/JS + IndexedDB + service worker. Projects can be exported as .dndatlas.
+
+## Deployment
+
+Every push to main runs JavaScript syntax checks and deploys to GitHub Pages.
